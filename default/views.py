@@ -1,7 +1,8 @@
 from django.shortcuts import render
 from .models import Poll, Option
-from django.views.generic import ListView, DetailView, RedirectView
+from django.views.generic import ListView, DetailView, RedirectView, CreateView, UpdateView, DeleteView
 from django.urls import reverse
+from django.urls import reverse_lazy
 
 # Create your views here.
 def poll_list(req):
@@ -32,3 +33,44 @@ class PollVote(RedirectView):
         #return f"/poll/{option.poll_id}"
         #return reverse('poll_view', args=[option.poll_id])
         return reverse('poll_view', kwargs={'pk': option.poll_id})
+    
+class PollCreate(CreateView):
+    model = Poll
+    fields = '__all__' # ['subject', 'desc']
+    success_url = reverse_lazy('poll_list')
+
+class PollEdit(UpdateView):
+    model = Poll
+    fields = '__all__' # ['subject', 'desc']
+
+    def get_success_url(self):
+        return reverse_lazy('poll_view',  kwargs={'pk': self.object.id})
+    
+class OptionCreate(CreateView):
+    model = Option
+    fields = ['title']
+
+    def form_valid(self, form):
+        form.instance.poll_id = self.kwargs['pid']
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse_lazy('poll_view', kwargs={'pk': self.kwargs['pid']})
+    
+class OptionEdit(UpdateView):
+    model = Option
+    fields = ['title']
+    pk_url_kwarg = 'oid'
+
+    def get_success_url(self):
+        return reverse_lazy('poll_view', kwargs ={'pk':self.object.poll_id})
+    
+class PollDelete(DeleteView):
+    model = Poll
+    success_url = reverse_lazy('poll_list')
+
+class OptionDelete(DeleteView):
+    model = Option
+    
+    def get_success_url(self):
+        return reverse_lazy('poll_view', kwargs={'pk':self.object.poll_id})
