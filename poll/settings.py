@@ -121,3 +121,8 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+LOGIN_REDIRECT_URL = 'poll_list'
+
+LOGOUT_REDIRECT_URL = 'https://youtu.be/dQw4w9WgXcQ?si=-81H8tadO3ytuVOL'
+LOGIN_URL = 'login'

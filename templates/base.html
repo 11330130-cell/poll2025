@@ -6,7 +6,20 @@
     <title>{% block title %}{% endblock %}</title>
 </head>
 <body>
+    <div class="container">
+    <div>
+        {% if not user.is_authenticated %}
+        <a href="{% url 'login' %}">登入</a>
+        {% else %}
+        <form action="{% url 'logout' %}" method="post">
+            {% csrf_token %}
+            Hi! {{ user }}
+            <input type="submit" value="登出">
+        </form>
+        {% endif %}
+    </div>
     {% block main %}{% endblock %}
     <div>由賴敬恩製作</div>
+    </div>
 </body>
 </html>
